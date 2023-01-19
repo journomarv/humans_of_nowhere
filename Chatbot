@@ -1,0 +1,49 @@
+import random
+import json
+
+"""
+This is a basic AI chatbot that answers questions about the South African constitution and human rights.
+"""
+
+# Define a dictionary containing a list of responses for each message
+responses = {
+  "default": ["I'm not sure what you mean. Can you rephrase your question?",
+              "I'm not sure I understand. Could you rephrase that?",
+              "I don't understand. Can you explain your question in a different way?"],
+  "greet": ["Hello! How can I help you?",
+            "Hi there! How can I help you?",
+            "Hi! How can I help you?"],
+  "goodbye": ["Goodbye!", "See you later!", "Have a nice day!"]
+}
+
+# Define a dictionary containing a list of questions and answers about the South African constitution and human rights
+questions = {
+    "What are the basic human rights in South Africa?": "The basic human rights in South Africa include the right to life, freedom and security of person, freedom of speech and expression, freedom of worship, freedom of movement and residence, freedom of association, and the right to human dignity."
+}
+
+def respond(message):
+    # Check if the message is in the questions dictionary
+    if message in questions:
+        # Return the matching message
+        bot_message = questions[message]
+    else:
+        # Return a random default response
+        bot_message = random.choice(responses["default"])
+
+    return bot_message
+
+# Define a function that sends a message to the bot
+def send_message(message):
+    # Print user_template including the user_message
+    print(user_template.format(message))
+    # Get the bot's response to the message
+    response = respond(message)
+    # Print the bot template including the bot's response.
+    print(bot_template.format(response))
+
+# Define templates for responses from the bot
+bot_template = "BOT: {0}"
+user_template = "USER: {0}"
+
+# Send a greeting message to the bot
+send_message("Hello")
