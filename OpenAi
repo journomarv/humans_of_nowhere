@@ -1,0 +1,84 @@
+
+
+import gym
+import numpy as np
+import random
+
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.nn.functional as F
+from torch.distributions import Categorical
+
+# Create the environment
+env = gym.make('SouthAfricanConstitution-v0')
+
+# Define the network
+class PolicyNetwork(nn.Module):
+    def __init__(self, input_size, output_size, hidden_layers, learning_rate):
+        super(PolicyNetwork, self).__init__()
+        self.input_size = input_size
+        self.output_size = output_size
+        self.hidden_layers = nn.ModuleList()
+
+        for i in range(hidden_layers):
+            self.hidden_layers.append(nn.Linear(input_size, output_size))
+            input_size = output_size
+
+        self.output_layer = nn.Linear(input_size, output_size)
+
+        self.optimizer = optim.Adam(self.parameters(), lr=learning_rate)
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.to(self.device)
+
+    def forward(self, x):
+        x = torch.from_numpy(x).float().to(self.device)
+        for layer in self.hidden_layers:
+            x = F.relu(layer(x))
+        x = self.output_layer(x)
+        return F.softmax(x, dim=-1)
+
+# Set hyperparameters for the network
+num_episodes = 500
+max_steps = 200
+learning_rate = 0.001
+gamma = 0.99
+
+# Initialize the network
+policy = PolicyNetwork(env.observation_space.shape[0], env.action_space.n, 3, learning_rate)
+
+# Training loop
+total_rewards = []
+for episode in range(num_episodes):
+    state = env.reset()
+    episode_reward = 0
+
+    for step in range(max_steps):
+        # get action probabilities from the network
+        action_probs = policy(state)
+        # sample action from the probabilities
+        action = np.random.choice(np.arange(env.action_space.n), p=action_probs.cpu().data.numpy())
+
+        # take action in the environment and get new state and reward
+        next_state, reward, done, _ = env.step(action)
+        # calculate the discounted return
+        discounted_return = reward + gamma * np.max(policy(next_state).cpu().data.numpy())
+
+        # calculate loss
+        policy_loss = -torch.log(action_probs[action]) * discounted_return
+        # backpropagate the loss
+        policy_loss.backward()
+        # update the network weights
+        policy.optimizer.step()
+        # reset the gradient
+        policy.optimizer.zero_grad()
+
+        state = next_state
+        episode_reward += reward
+        if done:
+            break
+
+    total_rewards.append(episode_reward)
+
+# Print the final result
+print("Average reward: ", np.mean(total_rewards))
