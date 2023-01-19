@@ -34,3 +34,26 @@ for repo in repos:
 
     # Run the NLP model on each file
     # TODO: Extract text and process with NLP model
+
+import os
+
+# Create a new directory
+directory_name = 'South African Constitution'
+os.mkdir(directory_name)
+
+# Specify the path for the new directory
+path = os.path.join(os.getcwd(), directory_name)
+
+# Get the list of all the files related to the South African Constitution
+file_list = ['Constitution of the Republic of South Africa 1996.pdf', 
+             'South African Constitution Summary.pdf', 
+             'South African Bill of Rights.pdf', 
+             'South Africa Constituent Assembly Debates.pdf']
+
+# Iterate over the list and add each file to the new directory
+for file in file_list:
+    file_path = os.path.join(path, file)
+    open(file_path, 'w').close()
+
+# Print the path of the new directory
+print("Directory '{}' created successfully!".format(directory_name))
