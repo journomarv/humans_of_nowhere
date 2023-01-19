@@ -1,2 +1,2 @@
 # humans_of_nowhere
-This repository contains code for a Natural Language Processing (NLP) model 
+This repository contains code for a Natural Language Processing (NLP) model that can analyze and gather text and documents related to South African constitutional education. It is built using OpenAI's open-source tools, and is designed to provide a comprehensive overview of the current state of constitutional education in South Africa. It can also be used to identify gaps in existing knowledge and provide insights into how to improve the educational environment.
