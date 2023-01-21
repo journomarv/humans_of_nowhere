@@ -1,0 +1,28 @@
+import gym
+import numpy as np
+import matplotlib.pyplot as plt
+
+from gym.envs.registration import register
+
+# Register the environment
+register(
+    id='human_rights-v0',
+    entry_point='gym.envs.human_rights:HumanRightsEnv',
+    kwargs={'country': 'South Africa'}
+)
+
+# Instantiate the environment
+env = gym.make('human_rights-v0')
+
+# Set up the agent
+observation = env.reset()
+done = False
+
+# Run the episode
+while not done:
+    action = np.random.randint(0, env.action_space.n)
+    observation, reward, done, info = env.step(action)
+
+# Visualize the episode
+plt.imshow(env.render(mode='rgb_array'))
+plt.show()
