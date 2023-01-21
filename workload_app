@@ -1,0 +1,35 @@
+var express = require('express');
+var app = express();
+var mongoose = require('mongoose');
+
+//Connect to MongoDB
+mongoose.connect('mongodb://localhost/human_rights_app');
+
+//Define the schema for our data
+var humanRightsSchema = mongoose.Schema({
+  title: String,
+  description: String,
+  author: String,
+  source: String,
+  date: Date
+});
+
+//Create a model based on the schema
+var HumanRights = mongoose.model('HumanRights', humanRightsSchema);
+
+//Define routes
+
+//Root route
+app.get('/', function(req, res) {
+  res.send('Welcome to the Humans of Nowhere app!');
+});
+
+//Route to get all stories
+app.get('/stories', function(req, res) {
+  HumanRights.find({}, function(err, stories) {
+    if(err) {
+      console.log(err);
+    } else {
+      res.json(stories);
+    }
+ 
